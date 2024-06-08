@@ -14,6 +14,17 @@ class userController extends Controller
         return $request;        
     }
 
+    function getsignup(){
+        return view('signup');
+    }
+
+    function postsignup(Request $request){
+        dd($request);   
+        //return $request;    
+    }
+    
+
+
     function userprofile(){
         $userData=[
             'name'=>'umesh',
