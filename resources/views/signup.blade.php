@@ -7,7 +7,7 @@
     <title>Signup</title>
 </head>
 <body>
-    <form action="{{ url('/user/signup') }}" method="POST">
+    <form action="{{url('/user/signup') }}" method="POST">
     @csrf
     <label for="name">Name</label>
     <input type="text" name="name" id="name" required>

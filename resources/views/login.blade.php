@@ -9,8 +9,8 @@
 <body>
         <form action="{{url('/user/login')}}" method="POST">
         @csrf
-        <label for="name">name</label>
-        <input type="text" name="name">
+        <label for="email">email</label>
+        <input type="email" name="email">
         <label for="password">password</label>
         <input type="password" name="password" id="">
         <button>submit</button>

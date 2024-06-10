@@ -3,35 +3,73 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
-class userController extends Controller
+class UserController extends Controller
 {
-    function getlogin(){
+    public function getlogin(){
         return view('login');
     }
 
-    function postlogin(Request $request){
-        return $request;        
+    public function postlogin(Request $request){
+        // Validation rules
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8',
+        ]);
+
+        // Attempt to log the user in
+        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+            // Authentication passed
+            return response()->json(['message' => 'Login successful'], 200);
+        } else {
+            // Authentication failed
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
     }
 
-    function getsignup(){
+    public function getsignup(){
         return view('signup');
     }
 
-    function postsignup(Request $request){
-        dd($request);   
-        //return $request;    
+    public function postsignup(Request $request){
+        // Validation rules
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:8|confirmed',
+            ]);
+
+            // Hashing the password
+            $hashedPassword = Hash::make($validated['password']);
+
+            // Creating the user
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => $hashedPassword,
+            ]);
+
+            // Authenticate the user
+            Auth::login($user);
+
+            // Redirecting with a success message
+            return response()->json(['message' => 'YES'], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['message' => 'NO'], 400);
+        }
     }
-    
 
-
-    function userprofile(){
-        $userData=[
-            'name'=>'umesh',
-            'age'=>'22',
-            'email'=>'umeshkumawat280@gmail.com',
-            'password'=>'12345678'
+    public function userprofile(){
+        $userData = [
+            'name' => 'umesh',
+            'age' => '22',
+            'email' => 'umeshkumawat280@gmail.com',
+            'password' => '12345678'
         ];
-        return view('profile',$userData);
+        return view('profile', $userData);
     }
 }
