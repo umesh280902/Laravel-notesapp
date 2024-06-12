@@ -64,12 +64,15 @@ class UserController extends Controller
     }
 
     public function userprofile(){
-        $userData = [
-            'name' => 'umesh',
-            'age' => '22',
-            'email' => 'umeshkumawat280@gmail.com',
-            'password' => '12345678'
-        ];
-        return view('profile', $userData);
+        if(Auth::check()){
+            $user=Auth::user();
+            $userData=[
+                'name'=>$user->name,
+                'email'=>$user->email
+            ];
+            return view('profile',$userData);
+        }else{
+            return redirect()->route('login')->with('error','you must be logged in to view the page');
+        }
     }
 }
